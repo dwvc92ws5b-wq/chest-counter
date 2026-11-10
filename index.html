@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101827">
+<title>Chest Counter</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root{color-scheme:dark;--bg:#101827;--panel:#1d293b;--blue:#263b58;--gold:#f5c451;--muted:#b8c9df}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0%,#29466b 0,#101827 48%);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#fff;display:flex;align-items:center;justify-content:center;padding:22px 18px calc(22px + env(safe-area-inset-bottom))}
+.app{width:min(100%,430px)}
+.header{background:linear-gradient(135deg,#304d70,#1d314b);border:1px solid #527196;border-radius:22px;padding:22px 18px;text-align:center;box-shadow:0 12px 32px #0005}
+.tag{display:inline-block;border:1px solid #72d69b;color:#a6f0c2;background:#173b31;padding:6px 11px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:1.3px}
+h1{font-size:27px;line-height:1.1;margin:13px 0 5px;letter-spacing:.5px}
+.sub{font-size:11px;color:#c3d5e9;letter-spacing:2px;font-weight:700}
+.counter{margin-top:16px;background:linear-gradient(160deg,#24344b,#172336);border:1px solid #344b68;border-radius:24px;padding:27px 18px 23px;text-align:center;box-shadow:0 14px 35px #0004}
+.label{color:var(--muted);font-weight:800;font-size:13px;letter-spacing:2px}
+.number{font-size:clamp(76px,23vw,112px);font-weight:950;line-height:1.08;letter-spacing:-4px;font-variant-numeric:tabular-nums;margin:8px 0;color:#fff;text-shadow:0 4px 0 #0003}
+.total{color:var(--gold);font-size:12px;font-weight:900;letter-spacing:2px}
+.buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:17px}
+button{border:0;border-radius:17px;min-height:70px;font-size:22px;font-weight:900;color:#fff;cursor:pointer;touch-action:manipulation;box-shadow:0 5px 0 #0004;transition:transform .08s,filter .08s}
+button:active{transform:translateY(3px);box-shadow:0 2px 0 #0004;filter:brightness(.9)}
+.minus{background:linear-gradient(180deg,#f06464,#bd303d)}
+.plus{background:linear-gradient(180deg,#36c879,#16834c)}
+.reset{width:100%;margin-top:14px;min-height:52px;background:#26364b;border:1px solid #435873;font-size:14px;letter-spacing:1.4px}
+.footer{text-align:center;color:#8fa5bf;font-size:10px;letter-spacing:2px;font-weight:800;margin-top:20px}
+.note{text-align:center;color:#9fb1c7;font-size:11px;margin-top:11px}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="header">
+    <span class="tag">● LIVE COUNTER</span>
+    <h1>📦 CHEST COUNTER</h1>
+    <div class="sub">FORTNITE • CASSE APERTE</div>
+  </header>
+  <section class="counter" aria-live="polite">
+    <div class="label">CASSE APERTE</div>
+    <div class="number" id="count">0</div>
+    <div class="total">TOTAL CHESTS</div>
+  </section>
+  <div class="buttons">
+    <button class="minus" id="minus" aria-label="Togli una cassa">− 1</button>
+    <button class="plus" id="plus" aria-label="Aggiungi una cassa">+ 1</button>
+  </div>
+  <button class="reset" id="reset">↻ &nbsp; RESET CONTATORE</button>
+  <div class="footer">CANDY HUNT • FORTNITE</div>
+  <div class="note">Il conteggio viene salvato automaticamente su questo iPhone.</div>
+</main>
+<script>
+const key="chest-counter-total-v1";
+let count=Math.max(0,Number(localStorage.getItem(key)||0));
+const output=document.getElementById("count");
+function render(){output.textContent=count.toLocaleString("it-IT");localStorage.setItem(key,String(count));}
+document.getElementById("plus").addEventListener("click",()=>{count++;render();});
+document.getElementById("minus").addEventListener("click",()=>{count=Math.max(0,count-1);render();});
+document.getElementById("reset").addEventListener("click",()=>{if(confirm("Vuoi azzerare il contatore?")){count=0;render();}});
+render();
+if("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+}
+</script>
+</body>
+</html>
